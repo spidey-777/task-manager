@@ -1,86 +1,55 @@
 import { useState } from "react";
-import {  toggleTaskCompletion } from "../utils/localStorage";
+import { toggleTaskCompletion } from "../utils/localStorage";
 
-function TaskItem({ id,title, description, isCompleted,createdAt,onRemove }) {
+function TaskItem({ id, title, description, isCompleted, createdAt, handleRemove}) {
   const [open, setOpen] = useState(false);
-  const handleToggle = () => {
+  const [toggle,setToggle] = useState(isCompleted)
+
+  const handleToggleTask = () => {
     toggleTaskCompletion(id);
+    setToggle(!toggle);
+    
   };
-  const handleRemove = () => {
-    onRemove(id);
-  }
+
+  const handleRemoveTask = () => {
+    handleRemove(id);
+  };
 
   return (
-    <div
-      style={{
-        margin: "1rem 8rem",
-        padding: "1rem",
-        background: "#f9f9f9",
-        borderRadius: "8px",
-        boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-        transition: "background 0.3s",
-      }}
-    >
-      <div style={{
-        display:'flex',
-        alignItems: "center",
-        justifyContent: "space-between",
-      }}>
+    <div className="mx-4 sm:mx-16 my-4 p-4 bg-white rounded-lg shadow-md transition duration-300">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <div
           onClick={() => setOpen((prev) => !prev)}
-          style={{
-            cursor: "pointer",
-            fontWeight: "bold",
-            display: "flex",
-            justifyContent: "flex-start",
-            alignItems: "center",
-            gap: "0.5rem",
-            textAlign: "left",
-          }}
+          className="flex items-center font-semibold gap-2 cursor-pointer text-left"
         >
           <span>{open ? "▲" : "▼"}</span>
-          <span>{title}</span>
+          <span className="break-all">{title}</span>
         </div>
-        <div>
+        <div className="flex items-center gap-3">
           <input
             type="checkbox"
-            name="isCompleted"
-            id="isCompleted"
-            value={isCompleted}
-            style={{ cursor: "pointer",scale: "1.5" }}
-            onChange={handleToggle}
+            checked={toggle}
+            onChange={handleToggleTask}
+            className="w-5 h-5 cursor-pointer accent-blue-600"
           />
-          <button 
-          onClick={handleRemove}
-          style={{
-            marginLeft: "1rem",
-            padding: "0.5rem 1rem",
-            backgroundColor: "#ff4d4d",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer",
-          }}>delete</button>
+          <button
+            onClick={handleRemoveTask}
+            className="bg-red-500 text-white px-3 py-1 rounded-md text-sm hover:bg-red-600 transition"
+          >
+            Delete
+          </button>
         </div>
       </div>
+
       {open && (
-        <div
-          style={{
-            marginTop: "0.25rem",
-            backgroundColor: "#eeeeee",
-            padding: "0.25rem",
-            borderRadius: "6px",
-            lineHeight: "1.5",
-            textAlign: "left",
-          }}
-        >
-          <div style={{paddingLeft:'1rem'}}>
-
-          <p >description : {description} </p>
-          <p >Created At: {createdAt} </p>
-
-          </div>
-          
+        <div className="mt-3 bg-gray-100 p-3 rounded-md text-sm text-gray-800">
+          <p>
+            <span className="font-medium">Description:</span> {description}
+          </p>
+          <p className="mt-1">
+            <span className="font-medium">Created At:</span>{" "}
+            {new Date(createdAt).toLocaleString()}
+          </p>
         </div>
       )}
     </div>
