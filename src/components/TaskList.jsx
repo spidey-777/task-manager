@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getTask, removeTask } from "../utils/localStorage";
+import { getTask, removeTask, toggleTaskCompletion } from "../utils/localStorage";
 import TaskItem from "./TaskItem";
 
 function TaskList({refresh}) {
@@ -11,6 +11,11 @@ function TaskList({refresh}) {
   const handleChange = (e) => {
     setFilter(e.target.value);
   };
+  const handleToggle = (id)=>{
+    toggleTaskCompletion(id);
+    setTasks(getTask());
+
+  }
 
   const handleRemove = (id) => {
     removeTask(id);
@@ -58,7 +63,7 @@ function TaskList({refresh}) {
 
       {totalTask > 0 ? (
         filteredTasks.map((task) => (
-          <TaskItem key={task.id} {...task} handleRemove={handleRemove}  />
+          <TaskItem key={task.id} {...task} handleRemove={handleRemove} handleToggle={handleToggle}  />
         ))
       ) : (
         <h1 className="text-xl text-center mt-10">You have no {filter} tasks</h1>

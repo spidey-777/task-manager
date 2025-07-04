@@ -1,13 +1,10 @@
 import { useState } from "react";
-import { toggleTaskCompletion } from "../utils/localStorage";
 
-function TaskItem({ id, title, description, isCompleted, createdAt, handleRemove}) {
+function TaskItem({ id, title, description, isCompleted, createdAt, handleRemove ,handleToggle}) {
   const [open, setOpen] = useState(false);
-  const [toggle,setToggle] = useState(isCompleted)
 
   const handleToggleTask = () => {
-    toggleTaskCompletion(id);
-    setToggle(!toggle);
+    handleToggle(id);
     
   };
 
@@ -28,7 +25,7 @@ function TaskItem({ id, title, description, isCompleted, createdAt, handleRemove
         <div className="flex items-center gap-3">
           <input
             type="checkbox"
-            checked={toggle}
+            checked={isCompleted}
             onChange={handleToggleTask}
             className="w-5 h-5 cursor-pointer accent-blue-600"
           />
