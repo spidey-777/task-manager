@@ -1,11 +1,14 @@
 import { useState } from "react";
-import { toggleTaskCompletion } from "../utils/localStorage";
+import {  toggleTaskCompletion } from "../utils/localStorage";
 
-function TaskItem({ id,title, description, isCompleted,createdAt }) {
+function TaskItem({ id,title, description, isCompleted,createdAt,onRemove }) {
   const [open, setOpen] = useState(false);
-  const handleToggle = (e) => {
+  const handleToggle = () => {
     toggleTaskCompletion(id);
   };
+  const handleRemove = () => {
+    onRemove(id);
+  }
 
   return (
     <div
@@ -47,6 +50,17 @@ function TaskItem({ id,title, description, isCompleted,createdAt }) {
             style={{ cursor: "pointer",scale: "1.5" }}
             onChange={handleToggle}
           />
+          <button 
+          onClick={handleRemove}
+          style={{
+            marginLeft: "1rem",
+            padding: "0.5rem 1rem",
+            backgroundColor: "#ff4d4d",
+            color: "white",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer",
+          }}>delete</button>
         </div>
       </div>
       {open && (

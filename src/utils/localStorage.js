@@ -27,3 +27,8 @@ export const toggleTaskCompletion = (taskId) => {
   });
   localStorage.setItem('task', JSON.stringify(updatedTasks));
  }
+ export const removeTask = (taskId) => {  
+   const tasks = JSON.parse(localStorage.getItem('task')) || [];
+    const updatedTasks = tasks.filter(task => task.id !== taskId);  
+    localStorage.setItem('task', JSON.stringify(updatedTasks));
+ }

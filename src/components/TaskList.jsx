@@ -1,20 +1,40 @@
-import { useState } from "react";
-import { getTask } from "../utils/localStorage";
+import { useState, useEffect } from "react";
+import { getTask, removeTask } from "../utils/localStorage";
 import TaskItem from "./TaskItem";
 import { Link } from "react-router-dom";
 
 function TaskList() {
-  const [filter, setFilter] = useState();
+  const [tasks, setTasks] = useState([]);
+  const [filter, setFilter] = useState("all");
+
+  useEffect(() => {
+    setTasks(getTask());
+  }, []);
+
   const handleChange = (e) => {
     setFilter(e.target.value);
   };
-  const tasks = getTask();
+
+  const handleRemove = (id) => {
+    removeTask(id);
+    setTasks(getTask());
+  };
+
   let filteredTasks = tasks;
+
+  if (filter === "completed") {
+    filteredTasks = tasks.filter((task) => task.isCompleted === true);
+  } else if (filter === "pending") {
+    filteredTasks = tasks.filter((task) => task.isCompleted === false);
+  }
+
+  const totalTask = filteredTasks.length;
+
   if (tasks.length === 0) {
     return (
       <div>
         <h3>
-          please add tasks{" "}
+          Please add tasks{" "}
           <Link to="/addtask">
             <button
               style={{
@@ -26,7 +46,7 @@ function TaskList() {
                 cursor: "pointer",
               }}
             >
-              add task
+              Add Task
             </button>
           </Link>
         </h3>
@@ -34,26 +54,16 @@ function TaskList() {
     );
   }
 
-  if (filter === "completed") {
-    filteredTasks = tasks.filter((task) => task.isCompleted === true);
-  } else if (filter === "pending") {
-    filteredTasks = tasks.filter((task) => task.isCompleted === false);
-  }
-  const totalTask = filteredTasks.length;
-
   return (
     <div>
       <div
         style={{
           padding: "0.5rem",
-          border: "none",
-          cursor: "pointer",
           gap: "10px",
           display: "flex",
           alignItems: "center",
-          marginLeft: "5rem",
+          margin: "0 5rem",
           justifyContent: "space-between",
-          marginRight: "5rem",
         }}
       >
         <form onChange={handleChange}>
@@ -63,17 +73,20 @@ function TaskList() {
           </label>
           <label>
             <input type="radio" name="tasks" value="completed" />
-            Complated
+            Completed
           </label>
           <label>
             <input type="radio" name="tasks" value="pending" />
             Pending
           </label>
         </form>
-        <h3>total task: {totalTask}</h3>
+        <h3>Total task: {totalTask}</h3>
       </div>
+
       {totalTask > 0 ? (
-        filteredTasks.map((task) => <TaskItem key={task.id} {...task} />)
+        filteredTasks.map((task) => (
+          <TaskItem key={task.id} {...task} onRemove={handleRemove} />
+        ))
       ) : (
         <h1>You have no {filter} tasks</h1>
       )}
